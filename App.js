@@ -1,21 +1,49 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View, PermissionsAndroid } from 'react-native'
+import React, { useEffect } from 'react'
+import * as MediaLibrary from "expo-media-library"
+import NavContainer from './MyApp/Navigation'
 
-export default function App() {
+
+const App = () => {
+
+  useEffect(() => {
+    const requestStoragePermission = async () => {
+
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE, {
+          title: "Storage Permission",
+          message: "This app needs access to your storage to store files",
+          buttonNeutral: "Ask me later",
+          buttonNegative: "Cancel",
+          buttonPositive: "Ok"
+        }
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log("Permission Granted")
+          getAudioFiles()
+        } else {
+          console.log("Permission denied")
+        }
+      } catch (error) {
+        console.log(error)
+      }
+
+    }
+
+    requestStoragePermission()
+  }, [])
+
+  const getAudioFiles = async () => {
+    const audioMedia = await MediaLibrary.getAssetsAsync({
+      mediaType: "audio"
+    })
+    console.log(audioMedia)
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+    <NavContainer />
+  )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App
