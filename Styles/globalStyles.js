@@ -11,6 +11,8 @@ const styles = StyleSheet.create({
         fontFamily: "logoFont",
         fontSize: 20,
         marginTop: 4
+    },
+    subs: {
     }
 })
 

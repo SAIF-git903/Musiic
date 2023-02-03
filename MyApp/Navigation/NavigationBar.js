@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 const NavigationBar = ({ title, onPress }) => {
+
     return (
         <View style={styles.container}>
             <TouchableOpacity style={styles.backButton} onPress={onPress}>
@@ -10,6 +11,7 @@ const NavigationBar = ({ title, onPress }) => {
             <Text style={styles.title}>{title}</Text>
         </View>
     );
+    
 };
 
 const styles = StyleSheet.create({

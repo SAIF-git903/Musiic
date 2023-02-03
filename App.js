@@ -1,10 +1,14 @@
-import { Text, View, PermissionsAndroid } from 'react-native'
-import React, { useEffect } from 'react'
+import { PermissionsAndroid } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import * as MediaLibrary from "expo-media-library"
 import NavContainer from './MyApp/Navigation'
-
+import AudioContext from './MyApp/Context/Context'
 
 const App = () => {
+
+  const [audio, setAudio] = useState([])
+  const [totalCount, setTotalCount] = useState(0)
+
 
   useEffect(() => {
     const requestStoragePermission = async () => {
@@ -28,21 +32,37 @@ const App = () => {
       } catch (error) {
         console.log(error)
       }
-
     }
 
     requestStoragePermission()
+
   }, [])
 
   const getAudioFiles = async () => {
-    const audioMedia = await MediaLibrary.getAssetsAsync({
-      mediaType: "audio"
-    })
-    console.log(audioMedia)
-  }
+    let audioMedia = await MediaLibrary.getAssetsAsync({
+      mediaType: "audio",
+    });
+
+    audioMedia = await MediaLibrary.getAssetsAsync({
+      mediaType: "audio",
+      first: audioMedia.totalCount
+    });
+
+    setTotalCount(audioMedia.totalCount)
+
+    const audioFiles = audioMedia.assets.filter((asset) => {
+      const fileExtension = asset.uri.split('.').pop();
+      return fileExtension === 'mp3';
+    });
+
+    setAudio(audioFiles)
+
+  };
 
   return (
-    <NavContainer />
+    <AudioContext.Provider value={[audio, totalCount]}>
+      <NavContainer />
+    </AudioContext.Provider>
   )
 }
 
